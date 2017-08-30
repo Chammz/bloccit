@@ -45,7 +45,27 @@ RSpec.describe QuestionsController, type: :controller do
       get :new
       expect(response).to have_http_status(:success)
     end
+
+    it "instantiates @question" do
+      get :new
+      expect(assigns(:question)).not_to be_nil
+    end
   end
+
+  describe "POST create" do
+    it "increases the number of Questions by 1" do
+      expect{ post :create, {question: {title: "Title", body: "Body", resolved: false}}}.to change(Question, :count).by(1)}
+    end
+    
+    it "assigns the new question to @question" do
+      post :create, {question: my_question.attributes}
+      expect(assigns(:question)).to eq Question.last
+    endescribe
+    
+    it "redirects to the enw question" do
+      post :create, {question: my_question.attributes}
+      expect(response).to redirect_to Question.last
+    end  
 
   describe "GET #edit" do
     it "returns http success" do
@@ -54,4 +74,25 @@ RSpec.describe QuestionsController, type: :controller do
     end
   end
 
+  describe "PUT update" do
+    it "updates question with expected attributes" do
+      new_title = RandomData.random_sentence
+      new_body = RandomData.random_paragraph
+
+      put :update, id: my_question.id, question: {title: new_title, body: new_body, resolved: false}
+
+      updated_question = assigns(:question)
+      expect(updated_question.id).to eq my_question.id
+      expect(updated_question.title).to eq new_title
+      expect(updated_question.body).to eq new_body
+    end
+    
+    it "redirects to the updated question" do
+      new_title = RandomData.random_sentence
+      new_body = RandomData.random_paragraph
+
+      put :update, id: my_question.id, question: {title: new_title, body: new_body, resolved: true}
+      expect(response).to redirect_to my_question
+    end  
+  end  
 end
