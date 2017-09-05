@@ -5,6 +5,7 @@ Rails.application.routes.draw do
   end
   resources :advertisements
   resources :questions
+  resources :sponsoredpost
 
  get 'about' => 'welcome#about'
 
